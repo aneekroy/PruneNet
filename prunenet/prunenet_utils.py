@@ -41,13 +41,13 @@ def _get_all_layers(model_name, model):
     ValueError
         If the model type is not supported.
     """
-    if "opt" in model_name:
+    if "opt" in model_name.lower():
         all_layers = model.decoder.layers
-    elif "phi" in model_name:
+    elif "phi" in model_name.lower():
         all_layers = model.layers
-    elif "llama" in model_name:
+    elif "llama" in model_name.lower():
         all_layers = model.layers
-    elif "falcon" in model_name:
+    elif "falcon" in model_name.lower():
         all_layers = model.transformer.h
     else:
         raise ValueError(
@@ -78,13 +78,13 @@ def _get_layer_weight(model_name, layer):
     ValueError
         If the model type is not supported.
     """
-    if "opt" in model_name:
+    if "opt" in model_name.lower():
         main_w = layer.fc1.weight.data
-    elif "phi" in model_name:
+    elif "phi" in model_name.lower():
         main_w = layer.mlp.fc1.weight.data
-    elif "llama" in model_name:
+    elif "llama" in model_name.lower():
         main_w = layer.mlp.gate_proj.weight.data
-    elif "falcon" in model_name:
+    elif "falcon" in model_name.lower():
         main_w = layer.mlp.dense_h_to_4h.weight.data
     else:
         ValueError(
@@ -114,16 +114,16 @@ def _get_action_model(model_name, model_config):
     ValueError
         If the model type is not supported.
     """
-    if "opt" in model_name:
+    if "opt" in model_name.lower():
         action_model = SparsityPredictor(
             model_config.hidden_size, model_config.ffn_dim
         )
-    elif "llama" in model_name or "phi" in model_name:
+    elif "llama" in model_name.lower() or "phi" in model_name.lower():
         action_model = SparsityPredictor(
             model_config.hidden_size,
             model_config.intermediate_size,
         )
-    elif "falcon" in model_name:
+    elif "falcon" in model_name.lower():
         action_model = SparsityPredictor(
             model_config.hidden_size,
             model_config.ffn_hidden_size,
@@ -152,7 +152,7 @@ def _slicing(model_name, layer, row_indices):
     -----
     This function updates weight and bias tensors in-place.
     """
-    if "opt" in model_name:
+    if "opt" in model_name.lower():
         # slice the intermediate and output weight matrices appropriately
         layer.fc1.out_features = len(row_indices)
         layer.fc1.weight.data = layer.fc1.weight[row_indices, :]
@@ -162,7 +162,7 @@ def _slicing(model_name, layer, row_indices):
         layer.fc2.in_features = len(row_indices)
         layer.fc2.weight.data = layer.fc2.weight[:, row_indices]
 
-    elif "phi" in model_name:
+    elif "phi" in model_name.lower():
         # slice the intermediate and output weight matrices appropriately
         layer.mlp.fc1.out_features = len(row_indices)
         layer.mlp.fc1.weight.data = layer.mlp.fc1.weight[row_indices, :]
@@ -172,7 +172,7 @@ def _slicing(model_name, layer, row_indices):
         layer.mlp.fc2.in_features = len(row_indices)
         layer.mlp.fc2.weight.data = layer.mlp.fc2.weight[:, row_indices]
 
-    elif "llama" in model_name:
+    elif "llama" in model_name.lower():
         # slice the intermediate and output weight matrices appropriately
         layer.mlp.gate_proj.out_features = len(row_indices)
         layer.mlp.gate_proj.weight.data = layer.mlp.gate_proj.weight[
@@ -188,7 +188,7 @@ def _slicing(model_name, layer, row_indices):
             :, row_indices
         ]
 
-    elif "falcon" in model_name:
+    elif "falcon" in model_name.lower():
         # slice the intermediate and output weight matrices appropriately
         layer.mlp.dense_h_to_4h.out_features = len(row_indices)
         layer.mlp.dense_h_to_4h.weight.data = layer.mlp.dense_h_to_4h.weight[
