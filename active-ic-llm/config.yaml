@@ -1,0 +1,10 @@
+model_name: gpt2
+al_method: random
+num_shots: 2
+pool_fraction: 0.5
+classification_tasks: ["sst2"]
+multichoice_tasks: ["hellaswag"]
+raw_data_dir: data/raw
+standardized_data_dir: data/standardized
+output_dir: outputs
+max_seq_length: 128

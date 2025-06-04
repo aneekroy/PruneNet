@@ -1,0 +1,5 @@
+# Ignore data and output directories
+active-ic-llm/data/raw/
+active-ic-llm/data/standardized/
+active-ic-llm/outputs/
+
